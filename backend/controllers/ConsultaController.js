@@ -62,24 +62,24 @@ class ConsultaController {
 
     // GET /api/emprestimos/em-aberto - Listar empréstimos ainda não devolvidos
     static async listarEmAberto(req, res) {
-        const statur = 'agendada';
-        const item = await ConsultaModel.buscarEmAberto(statur);
+        const status = 'agendada';
+        const item = await ConsultaModel.buscarEmAberto(status);
         return res.status(200).json({ sucesso: true, dados: item });
         // TODO: Buscar empréstimos onde data_devolucao_real é NULL
         // TODO: Retornar a lista com status 200
     }
 
     static async listarConcluida(req, res) {
-        const statur = 'concluida';
-        const item = await ConsultaModel.buscarEmAberto(statur);
+        const status = 'concluida';
+        const item = await ConsultaModel.buscarEmAberto(status);
         return res.status(200).json({ sucesso: true, dados: item });
         // TODO: Buscar empréstimos onde data_devolucao_real é NULL
         // TODO: Retornar a lista com status 200
     }
 
      static async listarCancelada(req, res) {
-        const statur = 'cancelada';
-        const item = await ConsultaModel.buscarEmAberto(statur);
+        const status = 'cancelada';
+        const item = await ConsultaModel.buscarEmAberto(status);
         return res.status(200).json({ sucesso: true, dados: item });
         // TODO: Buscar empréstimos onde data_devolucao_real é NULL
         // TODO: Retornar a lista com status 200

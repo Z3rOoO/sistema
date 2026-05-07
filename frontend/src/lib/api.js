@@ -1,5 +1,4 @@
 // Configuração da API
-// O backend geralmente roda na porta 3000 por padrão no Node.js
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
 // Função para fazer requisições à API
@@ -13,9 +12,6 @@ export async function apiRequest(endpoint, options = {}) {
     },
     ...options,
   };
-
-  console.log(`[API Request] ${config.method || 'GET'} ${url}`);
-  console.log(`[API Config]`, config);
 
   // Adicionar token de autenticação se existir
   const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
@@ -32,7 +28,6 @@ export async function apiRequest(endpoint, options = {}) {
     if (contentType && contentType.includes('application/json')) {
       data = await response.json();
     } else {
-      // Se não for JSON, pegamos o texto para depuração
       const text = await response.text();
       throw new Error(`Erro no servidor (${response.status}): O servidor não retornou JSON. Resposta: ${text.substring(0, 100)}...`);
     }
@@ -59,7 +54,7 @@ export const authAPI = {
   registrar: (nome, login, senha) =>
     apiRequest('/auth/registrar', {
       method: 'POST',
-      body: JSON.stringify({ nome_usuario: nome, login, senha }),
+      body: JSON.stringify({ nome, login, senha }),
     }),
 
   obterPerfil: () =>
@@ -83,13 +78,19 @@ export const animalAPI = {
   criar: (dados) =>
     apiRequest('/animal', {
       method: 'POST',
-      body: JSON.stringify(dados),
+      body: JSON.stringify({
+        nome: dados.nome,
+        descricao: `${dados.especie || ''} | ${dados.raca || ''} | Tutor: ${dados.tutor_id || ''}`
+      }),
     }),
 
   atualizar: (id, dados) =>
     apiRequest(`/animal/${id}`, {
       method: 'PUT',
-      body: JSON.stringify(dados),
+      body: JSON.stringify({
+        nome: dados.nome,
+        descricao: `${dados.especie || ''} | ${dados.raca || ''} | Tutor: ${dados.tutor_id || ''}`
+      }),
     }),
 
   excluir: (id) =>
@@ -128,19 +129,19 @@ export const consultaAPI = {
   criar: (dados) =>
     apiRequest('/consulta', {
       method: 'POST',
-      body: JSON.stringify(dados),
+      body: JSON.stringify({
+        nome: `Consulta: ${dados.animal_id}`,
+        descricao: `Motivo: ${dados.motivo} | Data: ${dados.data_hora} | Status: ${dados.status}`
+      }),
     }),
 
   atualizar: (id, dados) =>
     apiRequest(`/consulta/${id}`, {
       method: 'PUT',
-      body: JSON.stringify(dados),
-    }),
-
-  devolver: (id, dados) =>
-    apiRequest(`/consulta/${id}/devolver`, {
-      method: 'PUT',
-      body: JSON.stringify(dados),
+      body: JSON.stringify({
+        nome: dados.nome || `Consulta: ${dados.animal_id}`,
+        descricao: dados.descricao || `Motivo: ${dados.motivo} | Data: ${dados.data_hora} | Status: ${dados.status}`
+      }),
     }),
 
   excluir: (id) =>
@@ -164,13 +165,19 @@ export const tutorAPI = {
   criar: (dados) =>
     apiRequest('/tutor', {
       method: 'POST',
-      body: JSON.stringify(dados),
+      body: JSON.stringify({
+        nome: dados.nome,
+        descricao: `Tel: ${dados.telefone || ''} | Email: ${dados.email || ''}`
+      }),
     }),
 
   atualizar: (id, dados) =>
     apiRequest(`/tutor/${id}`, {
       method: 'PUT',
-      body: JSON.stringify(dados),
+      body: JSON.stringify({
+        nome: dados.nome,
+        descricao: `Tel: ${dados.telefone || ''} | Email: ${dados.email || ''}`
+      }),
     }),
 
   excluir: (id) =>

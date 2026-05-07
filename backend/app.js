@@ -8,6 +8,7 @@ import authRotas from './routes/authRotas.js';
 import tutor from './routes/tutorRotas.js';
 import animal from './routes/animalRotas.js';
 import consulta from './routes/consultaRotas.js';
+import usuarios from './routes/usuarioRotas.js';
 
 // Importar middlewares
 import { simpleLogMiddleware } from './middlewares/logMiddleware.js';
@@ -34,6 +35,7 @@ app.use('/auth', authRotas);
 app.use('/tutor', tutor);
 app.use('/animal', animal);
 app.use('/consulta', consulta);
+app.use('/usuarios', usuarios);
 
 // Rota raiz
 app.get('/', (req, res) => {

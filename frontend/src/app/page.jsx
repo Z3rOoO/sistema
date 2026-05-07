@@ -21,7 +21,6 @@ export default function home() {
         });
 
         console.log('dados:', dados);
-        console.log('Dados enviados:', form);
         setForm(camposVazios);
         setEditando(null);
     }
@@ -49,14 +48,8 @@ export default function home() {
                 />
                 <div className="flex gap-2">
                     <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm">
-                        {editando ? 'Salvar' : 'Cadastrar'}
-                    </button>
-                    {editando && (
-                        <button type="button" onClick={() => { salvar(); setForm(camposVazios); }}
-                            className="px-4 py-2 border border-gray-300 rounded-lg text-sm">
-                            Cancelar
-                        </button>
-                    )}
+                        {'Logar'}
+                    </button>            
                 </div>
             </form>
 

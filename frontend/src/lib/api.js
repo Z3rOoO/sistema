@@ -1,6 +1,6 @@
 // Configuração da API
-// O backend está usando prefixos como /auth, /tutor, /animal, /consulta sem o prefixo /api
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+// O backend geralmente roda na porta 3000 por padrão no Node.js
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
 // Função para fazer requisições à API
 export async function apiRequest(endpoint, options = {}) {
@@ -23,16 +23,19 @@ export async function apiRequest(endpoint, options = {}) {
   try {
     const response = await fetch(url, config);
     
-    // Se a resposta não for JSON (ex: erro 404 HTML), lançar erro antes de tentar parsear
+    // Tentar obter o JSON da resposta
+    let data;
     const contentType = response.headers.get('content-type');
-    if (!contentType || !contentType.includes('application/json')) {
-      throw new Error(`Erro no servidor (${response.status}): Resposta não é JSON`);
+    if (contentType && contentType.includes('application/json')) {
+      data = await response.json();
+    } else {
+      // Se não for JSON, pegamos o texto para depuração
+      const text = await response.text();
+      throw new Error(`Erro no servidor (${response.status}): O servidor não retornou JSON. Resposta: ${text.substring(0, 100)}...`);
     }
 
-    const data = await response.json();
-
     if (!response.ok) {
-      throw new Error(data.mensagem || 'Erro na requisição');
+      throw new Error(data.mensagem || data.erro || 'Erro na requisição');
     }
 
     return data;

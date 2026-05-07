@@ -91,7 +91,7 @@ export default function AnimaisPage() {
     <div className="min-h-screen bg-gray-50 py-8 px-4">
       <div className="max-w-6xl mx-auto">
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-800">Animais/Equipamentos</h1>
+          <h1 className="text-3xl font-bold text-gray-800">Gerenciar Animais</h1>
           <button
             onClick={() => setShowForm(!showForm)}
             className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-lg transition"

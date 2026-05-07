@@ -72,9 +72,9 @@ export default function Home() {
           <Link href="/animais">
             <div className="bg-white rounded-lg shadow-lg p-8 hover:shadow-xl transition cursor-pointer">
               <div className="text-4xl mb-4">🐾</div>
-              <h3 className="text-xl font-bold text-gray-800 mb-2">Animais/Equipamentos</h3>
+              <h3 className="text-xl font-bold text-gray-800 mb-2">Animais</h3>
               <p className="text-gray-600 text-sm">
-                Gerenciar animais e equipamentos do sistema
+                Gerenciar o cadastro de animais do petshop
               </p>
             </div>
           </Link>
@@ -83,9 +83,9 @@ export default function Home() {
           <Link href="/tutores">
             <div className="bg-white rounded-lg shadow-lg p-8 hover:shadow-xl transition cursor-pointer">
               <div className="text-4xl mb-4">👥</div>
-              <h3 className="text-xl font-bold text-gray-800 mb-2">Tutores/Clientes</h3>
+              <h3 className="text-xl font-bold text-gray-800 mb-2">Tutores</h3>
               <p className="text-gray-600 text-sm">
-                Gerenciar tutores e clientes cadastrados
+                Gerenciar os tutores dos animais
               </p>
             </div>
           </Link>
@@ -94,9 +94,9 @@ export default function Home() {
           <Link href="/consultas">
             <div className="bg-white rounded-lg shadow-lg p-8 hover:shadow-xl transition cursor-pointer">
               <div className="text-4xl mb-4">📋</div>
-              <h3 className="text-xl font-bold text-gray-800 mb-2">Consultas/Empréstimos</h3>
+              <h3 className="text-xl font-bold text-gray-800 mb-2">Consultas</h3>
               <p className="text-gray-600 text-sm">
-                Gerenciar consultas e empréstimos
+                Agendar e gerenciar consultas veterinárias
               </p>
             </div>
           </Link>
@@ -108,33 +108,11 @@ export default function Home() {
                 <div className="text-4xl mb-4">🔐</div>
                 <h3 className="text-xl font-bold text-gray-800 mb-2">Gerenciar Usuários</h3>
                 <p className="text-gray-600 text-sm">
-                  Criar, editar e deletar usuários do sistema
+                  Controle de acesso e usuários do sistema
                 </p>
               </div>
             </Link>
           )}
-
-          {/* Clientes */}
-          <Link href="/clientes">
-            <div className="bg-white rounded-lg shadow-lg p-8 hover:shadow-xl transition cursor-pointer">
-              <div className="text-4xl mb-4">🏢</div>
-              <h3 className="text-xl font-bold text-gray-800 mb-2">Clientes</h3>
-              <p className="text-gray-600 text-sm">
-                Gerenciar informações de clientes
-              </p>
-            </div>
-          </Link>
-
-          {/* Equipamentos */}
-          <Link href="/equipamentos">
-            <div className="bg-white rounded-lg shadow-lg p-8 hover:shadow-xl transition cursor-pointer">
-              <div className="text-4xl mb-4">⚙️</div>
-              <h3 className="text-xl font-bold text-gray-800 mb-2">Equipamentos</h3>
-              <p className="text-gray-600 text-sm">
-                Gerenciar equipamentos disponíveis
-              </p>
-            </div>
-          </Link>
         </div>
 
         {/* Info Box */}

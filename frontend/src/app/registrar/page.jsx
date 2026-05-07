@@ -66,7 +66,7 @@ export default function RegistrarPage() {
 
     try {
       const response = await authAPI.registrar(
-        formData.nome,
+        formData.nome, // Será enviado como nome_usuario no api.js se necessário
         formData.login,
         formData.senha
       );

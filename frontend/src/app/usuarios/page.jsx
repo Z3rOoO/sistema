@@ -12,10 +12,9 @@ export default function UsuariosPage() {
   const [pagina, setPagina] = useState(1);
   const [totalPaginas, setTotalPaginas] = useState(1);
   const [formData, setFormData] = useState({
-    nome: '',
+    nome_usuario: '',
     login: '',
     senha: '',
-    tipo: 'usuario',
   });
 
   // Carregar lista de usuários
@@ -52,14 +51,12 @@ export default function UsuariosPage() {
 
     try {
       if (editingId) {
-        // Atualizar
         await usuarioAPI.atualizar(editingId, formData);
       } else {
-        // Criar
         await usuarioAPI.criar(formData);
       }
 
-      setFormData({ nome: '', login: '', senha: '', tipo: 'usuario' });
+      setFormData({ nome_usuario: '', login: '', senha: '' });
       setEditingId(null);
       setShowForm(false);
       carregarUsuarios();
@@ -70,12 +67,11 @@ export default function UsuariosPage() {
 
   const handleEdit = (usuario) => {
     setFormData({
-      nome: usuario.nome,
+      nome_usuario: usuario.nome_usuario || usuario.nome,
       login: usuario.login,
       senha: '',
-      tipo: usuario.tipo || 'usuario',
     });
-    setEditingId(usuario.id);
+    setEditingId(usuario.id_usuario || usuario.id);
     setShowForm(true);
   };
 
@@ -91,7 +87,7 @@ export default function UsuariosPage() {
   };
 
   const handleCancel = () => {
-    setFormData({ nome: '', login: '', senha: '', tipo: 'usuario' });
+    setFormData({ nome_usuario: '', login: '', senha: '' });
     setEditingId(null);
     setShowForm(false);
   };
@@ -124,18 +120,18 @@ export default function UsuariosPage() {
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label htmlFor="nome" className="block text-sm font-medium text-gray-700 mb-2">
-                  Nome
+                <label htmlFor="nome_usuario" className="block text-sm font-medium text-gray-700 mb-2">
+                  Nome do Usuário
                 </label>
                 <input
                   type="text"
-                  id="nome"
-                  name="nome"
-                  value={formData.nome}
+                  id="nome_usuario"
+                  name="nome_usuario"
+                  value={formData.nome_usuario}
                   onChange={handleChange}
                   required
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
-                  placeholder="Digite o nome do usuário"
+                  placeholder="Nome completo"
                 />
               </div>
 
@@ -151,7 +147,7 @@ export default function UsuariosPage() {
                   onChange={handleChange}
                   required
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
-                  placeholder="Digite o login do usuário"
+                  placeholder="Login de acesso"
                 />
               </div>
 
@@ -167,24 +163,8 @@ export default function UsuariosPage() {
                   onChange={handleChange}
                   required={!editingId}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
-                  placeholder="Digite a senha"
+                  placeholder="Senha de acesso"
                 />
-              </div>
-
-              <div>
-                <label htmlFor="tipo" className="block text-sm font-medium text-gray-700 mb-2">
-                  Tipo de Usuário
-                </label>
-                <select
-                  id="tipo"
-                  name="tipo"
-                  value={formData.tipo}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
-                >
-                  <option value="usuario">Usuário</option>
-                  <option value="admin">Admin</option>
-                </select>
               </div>
 
               <div className="flex gap-2">
@@ -224,25 +204,15 @@ export default function UsuariosPage() {
                     <th className="px-6 py-3 text-left text-sm font-semibold text-gray-800">ID</th>
                     <th className="px-6 py-3 text-left text-sm font-semibold text-gray-800">Nome</th>
                     <th className="px-6 py-3 text-left text-sm font-semibold text-gray-800">Login</th>
-                    <th className="px-6 py-3 text-left text-sm font-semibold text-gray-800">Tipo</th>
                     <th className="px-6 py-3 text-left text-sm font-semibold text-gray-800">Ações</th>
                   </tr>
                 </thead>
                 <tbody>
                   {usuarios.map((usuario) => (
-                    <tr key={usuario.id} className="border-t hover:bg-gray-50">
-                      <td className="px-6 py-4 text-sm text-gray-800">{usuario.id}</td>
-                      <td className="px-6 py-4 text-sm text-gray-800">{usuario.nome}</td>
+                    <tr key={usuario.id_usuario || usuario.id} className="border-t hover:bg-gray-50">
+                      <td className="px-6 py-4 text-sm text-gray-800">{usuario.id_usuario || usuario.id}</td>
+                      <td className="px-6 py-4 text-sm text-gray-800">{usuario.nome_usuario || usuario.nome}</td>
                       <td className="px-6 py-4 text-sm text-gray-800">{usuario.login}</td>
-                      <td className="px-6 py-4 text-sm">
-                        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                          usuario.tipo === 'admin'
-                            ? 'bg-red-100 text-red-800'
-                            : 'bg-blue-100 text-blue-800'
-                        }`}>
-                          {usuario.tipo || 'usuario'}
-                        </span>
-                      </td>
                       <td className="px-6 py-4 text-sm">
                         <button
                           onClick={() => handleEdit(usuario)}
@@ -251,7 +221,7 @@ export default function UsuariosPage() {
                           Editar
                         </button>
                         <button
-                          onClick={() => handleDelete(usuario.id)}
+                          onClick={() => handleDelete(usuario.id_usuario || usuario.id)}
                           className="bg-red-600 hover:bg-red-700 text-white font-semibold py-1 px-3 rounded-lg transition"
                         >
                           Excluir

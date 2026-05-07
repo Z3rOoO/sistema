@@ -11,7 +11,8 @@ export default function TutoresPage() {
   const [editingId, setEditingId] = useState(null);
   const [formData, setFormData] = useState({
     nome: '',
-    descricao: '',
+    telefone: '',
+    email: '',
   });
 
   // Carregar lista de tutores
@@ -47,14 +48,12 @@ export default function TutoresPage() {
 
     try {
       if (editingId) {
-        // Atualizar
         await tutorAPI.atualizar(editingId, formData);
       } else {
-        // Criar
         await tutorAPI.criar(formData);
       }
 
-      setFormData({ nome: '', descricao: '' });
+      setFormData({ nome: '', telefone: '', email: '' });
       setEditingId(null);
       setShowForm(false);
       carregarTutores();
@@ -64,7 +63,11 @@ export default function TutoresPage() {
   };
 
   const handleEdit = (tutor) => {
-    setFormData({ nome: tutor.nome, descricao: tutor.descricao });
+    setFormData({ 
+      nome: tutor.nome, 
+      telefone: tutor.telefone || '', 
+      email: tutor.email || '' 
+    });
     setEditingId(tutor.id);
     setShowForm(true);
   };
@@ -81,7 +84,7 @@ export default function TutoresPage() {
   };
 
   const handleCancel = () => {
-    setFormData({ nome: '', descricao: '' });
+    setFormData({ nome: '', telefone: '', email: '' });
     setEditingId(null);
     setShowForm(false);
   };
@@ -113,34 +116,50 @@ export default function TutoresPage() {
             </h2>
 
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label htmlFor="nome" className="block text-sm font-medium text-gray-700 mb-2">
-                  Nome
-                </label>
-                <input
-                  type="text"
-                  id="nome"
-                  name="nome"
-                  value={formData.nome}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
-                  placeholder="Digite o nome do tutor"
-                />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label htmlFor="nome" className="block text-sm font-medium text-gray-700 mb-2">
+                    Nome Completo
+                  </label>
+                  <input
+                    type="text"
+                    id="nome"
+                    name="nome"
+                    value={formData.nome}
+                    onChange={handleChange}
+                    required
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+                    placeholder="Nome do tutor"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="telefone" className="block text-sm font-medium text-gray-700 mb-2">
+                    Telefone
+                  </label>
+                  <input
+                    type="text"
+                    id="telefone"
+                    name="telefone"
+                    value={formData.telefone}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+                    placeholder="(00) 00000-0000"
+                  />
+                </div>
               </div>
 
               <div>
-                <label htmlFor="descricao" className="block text-sm font-medium text-gray-700 mb-2">
-                  Descrição
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                  E-mail
                 </label>
-                <textarea
-                  id="descricao"
-                  name="descricao"
-                  value={formData.descricao}
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={formData.email}
                   onChange={handleChange}
-                  rows="4"
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
-                  placeholder="Digite a descrição do tutor"
+                  placeholder="email@exemplo.com"
                 />
               </div>
 
@@ -177,7 +196,10 @@ export default function TutoresPage() {
             {tutores.map((tutor) => (
               <div key={tutor.id} className="bg-white rounded-lg shadow-md p-6">
                 <h3 className="text-lg font-bold text-gray-800 mb-2">{tutor.nome}</h3>
-                <p className="text-gray-600 text-sm mb-4">{tutor.descricao}</p>
+                <div className="text-sm text-gray-600 space-y-1 mb-4">
+                  <p><strong>Tel:</strong> {tutor.telefone || 'Não informado'}</p>
+                  <p><strong>Email:</strong> {tutor.email || 'Não informado'}</p>
+                </div>
                 <div className="flex gap-2">
                   <button
                     onClick={() => handleEdit(tutor)}

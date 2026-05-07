@@ -56,7 +56,7 @@ export const authAPI = {
   registrar: (nome, login, senha) =>
     apiRequest('/auth/registrar', {
       method: 'POST',
-      body: JSON.stringify({ nome, login, senha }),
+      body: JSON.stringify({ nome_usuario: nome, login, senha }),
     }),
 
   obterPerfil: () =>

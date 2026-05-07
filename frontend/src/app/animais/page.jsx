@@ -1,37 +1,42 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { animalAPI } from '@/lib/api';
-import Link from 'next/link';
+import { animalAPI, tutorAPI } from '@/lib/api';
 
 export default function AnimaisPage() {
   const [animais, setAnimais] = useState([]);
+  const [tutores, setTutores] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [formData, setFormData] = useState({
     nome: '',
-    descricao: '',
+    especie: '',
+    raca: '',
+    tutor_id: '',
   });
 
-  // Carregar lista de animais
-  const carregarAnimais = async () => {
+  // Carregar dados iniciais
+  const carregarDados = async () => {
     try {
       setLoading(true);
-      const response = await animalAPI.listarTodos();
-      if (response.sucesso) {
-        setAnimais(response.dados || []);
-      }
+      const [resAnimais, resTutores] = await Promise.all([
+        animalAPI.listarTodos(),
+        tutorAPI.listarTodos()
+      ]);
+      
+      if (resAnimais.sucesso) setAnimais(resAnimais.dados || []);
+      if (resTutores.sucesso) setTutores(resTutores.dados || []);
     } catch (err) {
-      setError('Erro ao carregar animais: ' + err.message);
+      setError('Erro ao carregar dados: ' + err.message);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    carregarAnimais();
+    carregarDados();
   }, []);
 
   const handleChange = (e) => {
@@ -48,24 +53,27 @@ export default function AnimaisPage() {
 
     try {
       if (editingId) {
-        // Atualizar
         await animalAPI.atualizar(editingId, formData);
       } else {
-        // Criar
         await animalAPI.criar(formData);
       }
 
-      setFormData({ nome: '', descricao: '' });
+      setFormData({ nome: '', especie: '', raca: '', tutor_id: '' });
       setEditingId(null);
       setShowForm(false);
-      carregarAnimais();
+      carregarDados();
     } catch (err) {
       setError('Erro ao salvar animal: ' + err.message);
     }
   };
 
   const handleEdit = (animal) => {
-    setFormData({ nome: animal.nome, descricao: animal.descricao });
+    setFormData({ 
+      nome: animal.nome, 
+      especie: animal.especie || '', 
+      raca: animal.raca || '',
+      tutor_id: animal.tutor_id || ''
+    });
     setEditingId(animal.id);
     setShowForm(true);
   };
@@ -75,16 +83,22 @@ export default function AnimaisPage() {
 
     try {
       await animalAPI.excluir(id);
-      carregarAnimais();
+      carregarDados();
     } catch (err) {
       setError('Erro ao excluir animal: ' + err.message);
     }
   };
 
   const handleCancel = () => {
-    setFormData({ nome: '', descricao: '' });
+    setFormData({ nome: '', especie: '', raca: '', tutor_id: '' });
     setEditingId(null);
     setShowForm(false);
+  };
+
+  // Função para encontrar o nome do tutor pelo ID
+  const getNomeTutor = (id) => {
+    const tutor = tutores.find(t => t.id === id);
+    return tutor ? tutor.nome : 'Não vinculado';
   };
 
   return (
@@ -114,35 +128,71 @@ export default function AnimaisPage() {
             </h2>
 
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label htmlFor="nome" className="block text-sm font-medium text-gray-700 mb-2">
-                  Nome
-                </label>
-                <input
-                  type="text"
-                  id="nome"
-                  name="nome"
-                  value={formData.nome}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
-                  placeholder="Digite o nome do animal"
-                />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label htmlFor="nome" className="block text-sm font-medium text-gray-700 mb-2">
+                    Nome do Animal
+                  </label>
+                  <input
+                    type="text"
+                    id="nome"
+                    name="nome"
+                    value={formData.nome}
+                    onChange={handleChange}
+                    required
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+                    placeholder="Ex: Rex"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="tutor_id" className="block text-sm font-medium text-gray-700 mb-2">
+                    Tutor (Dono)
+                  </label>
+                  <select
+                    id="tutor_id"
+                    name="tutor_id"
+                    value={formData.tutor_id}
+                    onChange={handleChange}
+                    required
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+                  >
+                    <option value="">Selecione um tutor</option>
+                    {tutores.map(tutor => (
+                      <option key={tutor.id} value={tutor.id}>{tutor.nome}</option>
+                    ))}
+                  </select>
+                </div>
               </div>
 
-              <div>
-                <label htmlFor="descricao" className="block text-sm font-medium text-gray-700 mb-2">
-                  Descrição
-                </label>
-                <textarea
-                  id="descricao"
-                  name="descricao"
-                  value={formData.descricao}
-                  onChange={handleChange}
-                  rows="4"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
-                  placeholder="Digite a descrição do animal"
-                />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label htmlFor="especie" className="block text-sm font-medium text-gray-700 mb-2">
+                    Espécie
+                  </label>
+                  <input
+                    type="text"
+                    id="especie"
+                    name="especie"
+                    value={formData.especie}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+                    placeholder="Ex: Cachorro, Gato"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="raca" className="block text-sm font-medium text-gray-700 mb-2">
+                    Raça
+                  </label>
+                  <input
+                    type="text"
+                    id="raca"
+                    name="raca"
+                    value={formData.raca}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+                    placeholder="Ex: Poodle, SRD"
+                  />
+                </div>
               </div>
 
               <div className="flex gap-2">
@@ -178,7 +228,11 @@ export default function AnimaisPage() {
             {animais.map((animal) => (
               <div key={animal.id} className="bg-white rounded-lg shadow-md p-6">
                 <h3 className="text-lg font-bold text-gray-800 mb-2">{animal.nome}</h3>
-                <p className="text-gray-600 text-sm mb-4">{animal.descricao}</p>
+                <div className="text-sm text-gray-600 space-y-1 mb-4">
+                  <p><strong>Espécie:</strong> {animal.especie || 'N/A'}</p>
+                  <p><strong>Raça:</strong> {animal.raca || 'N/A'}</p>
+                  <p><strong>Tutor:</strong> {getNomeTutor(animal.tutor_id)}</p>
+                </div>
                 <div className="flex gap-2">
                   <button
                     onClick={() => handleEdit(animal)}

@@ -1,5 +1,6 @@
 // Configuração da API
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
+// O backend está usando prefixos como /auth, /tutor, /animal, /consulta sem o prefixo /api
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 
 // Função para fazer requisições à API
 export async function apiRequest(endpoint, options = {}) {
@@ -21,6 +22,13 @@ export async function apiRequest(endpoint, options = {}) {
 
   try {
     const response = await fetch(url, config);
+    
+    // Se a resposta não for JSON (ex: erro 404 HTML), lançar erro antes de tentar parsear
+    const contentType = response.headers.get('content-type');
+    if (!contentType || !contentType.includes('application/json')) {
+      throw new Error(`Erro no servidor (${response.status}): Resposta não é JSON`);
+    }
+
     const data = await response.json();
 
     if (!response.ok) {
@@ -57,29 +65,29 @@ export const authAPI = {
 // ===== ANIMAIS =====
 export const animalAPI = {
   listarTodos: () =>
-    apiRequest('/equipamentos', {
+    apiRequest('/animal', {
       method: 'GET',
     }),
 
   buscarPorId: (id) =>
-    apiRequest(`/equipamentos/${id}`, {
+    apiRequest(`/animal/${id}`, {
       method: 'GET',
     }),
 
   criar: (dados) =>
-    apiRequest('/equipamentos', {
+    apiRequest('/animal', {
       method: 'POST',
       body: JSON.stringify(dados),
     }),
 
   atualizar: (id, dados) =>
-    apiRequest(`/equipamentos/${id}`, {
+    apiRequest(`/animal/${id}`, {
       method: 'PUT',
       body: JSON.stringify(dados),
     }),
 
   excluir: (id) =>
-    apiRequest(`/equipamentos/${id}`, {
+    apiRequest(`/animal/${id}`, {
       method: 'DELETE',
     }),
 };
@@ -87,50 +95,50 @@ export const animalAPI = {
 // ===== CONSULTAS =====
 export const consultaAPI = {
   listarTodos: () =>
-    apiRequest('/emprestimos', {
+    apiRequest('/consulta', {
       method: 'GET',
     }),
 
   listarEmAberto: () =>
-    apiRequest('/emprestimos/em-aberto', {
+    apiRequest('/consulta/em-aberto', {
       method: 'GET',
     }),
 
   listarConcluidas: () =>
-    apiRequest('/emprestimos/concluidas', {
+    apiRequest('/consulta/concluidas', {
       method: 'GET',
     }),
 
   listarCanceladas: () =>
-    apiRequest('/emprestimos/canceladas', {
+    apiRequest('/consulta/canceladas', {
       method: 'GET',
     }),
 
   buscarPorId: (id) =>
-    apiRequest(`/emprestimos/${id}`, {
+    apiRequest(`/consulta/${id}`, {
       method: 'GET',
     }),
 
   criar: (dados) =>
-    apiRequest('/emprestimos', {
+    apiRequest('/consulta', {
       method: 'POST',
       body: JSON.stringify(dados),
     }),
 
   atualizar: (id, dados) =>
-    apiRequest(`/emprestimos/${id}`, {
+    apiRequest(`/consulta/${id}`, {
       method: 'PUT',
       body: JSON.stringify(dados),
     }),
 
   devolver: (id, dados) =>
-    apiRequest(`/emprestimos/${id}/devolver`, {
+    apiRequest(`/consulta/${id}/devolver`, {
       method: 'PUT',
       body: JSON.stringify(dados),
     }),
 
   excluir: (id) =>
-    apiRequest(`/emprestimos/${id}`, {
+    apiRequest(`/consulta/${id}`, {
       method: 'DELETE',
     }),
 };
@@ -138,29 +146,29 @@ export const consultaAPI = {
 // ===== TUTORES =====
 export const tutorAPI = {
   listarTodos: () =>
-    apiRequest('/tutores', {
+    apiRequest('/tutor', {
       method: 'GET',
     }),
 
   buscarPorId: (id) =>
-    apiRequest(`/tutores/${id}`, {
+    apiRequest(`/tutor/${id}`, {
       method: 'GET',
     }),
 
   criar: (dados) =>
-    apiRequest('/tutores', {
+    apiRequest('/tutor', {
       method: 'POST',
       body: JSON.stringify(dados),
     }),
 
   atualizar: (id, dados) =>
-    apiRequest(`/tutores/${id}`, {
+    apiRequest(`/tutor/${id}`, {
       method: 'PUT',
       body: JSON.stringify(dados),
     }),
 
   excluir: (id) =>
-    apiRequest(`/tutores/${id}`, {
+    apiRequest(`/tutor/${id}`, {
       method: 'DELETE',
     }),
 };

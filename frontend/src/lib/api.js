@@ -14,6 +14,9 @@ export async function apiRequest(endpoint, options = {}) {
     ...options,
   };
 
+  console.log(`[API Request] ${config.method || 'GET'} ${url}`);
+  console.log(`[API Config]`, config);
+
   // Adicionar token de autenticação se existir
   const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
   if (token) {

@@ -1,4 +1,4 @@
-import { create, read, update, getConnection } from '../config/database.js';
+import { create, read, update, deleteRecord, getConnection } from '../config/database.js';
 
 class ConsultaModel {
 
@@ -19,8 +19,8 @@ class ConsultaModel {
     }
 
     static async buscarEmAberto(status) {
-        const rows = await read('Consulta', `status = ${status}`);
-        return rows[0] || null;
+        const rows = await read('Consulta', `status = '${status}'`);
+        return rows;
         // TODO: Implementar a busca por ID
         // Dica: use a função read('clientes', `id_cliente = ${id}`)
         //       e retorne apenas o primeiro resultado (rows[0])

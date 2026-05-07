@@ -49,7 +49,7 @@ class AnimalController {
     
         // DELETE /api/animais/:id - Remover um animal                  
         static async excluir(req, res) {
-            await TutorModel.excluir(req.params.id);
+            await AnimalModel.excluir(req.params.id);
             res.json({ sucesso: true });
     
             // TODO: Obter o :id da URL

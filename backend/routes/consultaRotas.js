@@ -21,8 +21,8 @@ router.get('/:id', ctl.buscarPorId);
 // POST /api/emprestimos - Registrar saída (novo empréstimo)
 router.post('/', ctl.criar);
 
-// PUT /api/emprestimos/:id/devolver - Registrar devolução
-router.put('/:id/devolver', ctl.atualizar);
+// PUT /api/emprestimos/:id - Atualizar consulta
+router.put('/:id', ctl.atualizar);
 
 // DELETE /api/emprestimos/:id - Cancelar empréstimo
 router.delete('/:id', ctl.excluir);
